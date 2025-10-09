@@ -14,7 +14,7 @@ const historyData = [
     place: "Universitas Bina Bangsa",
     description:
       "Studi di jurusan Ilmu Komputer, pernah aktif di organisasi Himpunan Mahasiswa Ilmu Komputer Uniba.",
-    logo: "/uniba.png",
+    logo: "/Uniba.png",
   },
 ];
 
