@@ -123,8 +123,7 @@ const About = () => {
 
           <div className="overflow-hidden rounded-xl mb-4">
             <motion.img
-              src="/profile1.jpg"
-              alt="Adhitya"
+              src={process.env.PUBLIC_URL + "/profile1.jpg"} alt="Adhitya"
               className="w-full h-72 object-cover rounded-xl group-hover:scale-105 transition-transform duration-700"
               style={{ transform: "translateZ(40px)" }}
             />
