@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/prof.dev.adhitya/static/css/main.b31b5594.css",
-    "main.js": "/prof.dev.adhitya/static/js/main.c3f80ea3.js",
+    "main.css": "/prof.dev.adhitya/static/css/main.b2fd5ed0.css",
+    "main.js": "/prof.dev.adhitya/static/js/main.e3e1cca5.js",
     "static/js/453.04c6c824.chunk.js": "/prof.dev.adhitya/static/js/453.04c6c824.chunk.js",
     "index.html": "/prof.dev.adhitya/index.html",
-    "main.b31b5594.css.map": "/prof.dev.adhitya/static/css/main.b31b5594.css.map",
-    "main.c3f80ea3.js.map": "/prof.dev.adhitya/static/js/main.c3f80ea3.js.map",
+    "main.b2fd5ed0.css.map": "/prof.dev.adhitya/static/css/main.b2fd5ed0.css.map",
+    "main.e3e1cca5.js.map": "/prof.dev.adhitya/static/js/main.e3e1cca5.js.map",
     "453.04c6c824.chunk.js.map": "/prof.dev.adhitya/static/js/453.04c6c824.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b31b5594.css",
-    "static/js/main.c3f80ea3.js"
+    "static/css/main.b2fd5ed0.css",
+    "static/js/main.e3e1cca5.js"
   ]
 }
