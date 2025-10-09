@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
 const skills = [
@@ -11,6 +11,7 @@ const skills = [
 ];
 
 const About = () => {
+  const [activeSkill, setActiveSkill] = useState(null);
   const cardRef = useRef(null);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -22,8 +23,8 @@ const About = () => {
     const y = e.clientY - rect.top;
     const midX = rect.width / 2;
     const midY = rect.height / 2;
-
     const rotateAmount = 12;
+
     rotateY.set(((x - midX) / midX) * rotateAmount);
     rotateX.set(-((y - midY) / midY) * rotateAmount);
     translateY.set(((y - midY) / midY) * 10);
@@ -33,6 +34,10 @@ const About = () => {
     animate(rotateX, 0, { type: "spring", stiffness: 100, damping: 12 });
     animate(rotateY, 0, { type: "spring", stiffness: 100, damping: 12 });
     animate(translateY, 0, { type: "spring", stiffness: 100, damping: 12 });
+  };
+
+  const handleSkillClick = (skill) => {
+    setActiveSkill(activeSkill === skill ? null : skill);
   };
 
   return (
@@ -69,23 +74,42 @@ const About = () => {
 
         {/* Skill Boxes - Glassmorphism Style */}
         <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {skills.map((skill, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.4 }}
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "rgba(255,255,255,0.05)",
-                boxShadow: "0 0 25px rgba(160, 100, 255, 0.25)",
-                borderColor: "rgba(168, 85, 247, 0.6)",
-              }}
-              className="text-sm font-medium px-4 py-2 rounded-xl text-white bg-white/5 backdrop-blur-md border border-white/10 text-center transition-all duration-300 select-none"
-            >
-              {skill}
-            </motion.div>
-          ))}
+          {skills.map((skill, i) => {
+            const isActive = activeSkill === skill;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1, duration: 0.4 }}
+                whileHover={{
+                  scale: 1.05,
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  boxShadow: "0 0 25px rgba(160, 100, 255, 0.25)",
+                  borderColor: "rgba(168, 85, 247, 0.6)",
+                }}
+                animate={
+                  isActive
+                    ? {
+                        scale: 1.05,
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                        boxShadow: "0 0 25px rgba(160, 100, 255, 0.25)",
+                        borderColor: "rgba(168, 85, 247, 0.6)",
+                      }
+                    : {
+                        scale: 1,
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                        boxShadow: "none",
+                        borderColor: "rgba(255,255,255,0.1)",
+                      }
+                }
+                onClick={() => handleSkillClick(skill)}
+                className="text-sm font-medium px-4 py-2 rounded-xl text-white bg-white/5 backdrop-blur-md border border-white/10 text-center transition-all duration-300 select-none cursor-pointer"
+              >
+                {skill}
+              </motion.div>
+            );
+          })}
         </div>
       </motion.div>
 
@@ -95,9 +119,7 @@ const About = () => {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         className="relative w-72 h-[380px] flex flex-col items-center justify-start cursor-pointer"
-        style={{
-          perspective: 1000,
-        }}
+        style={{ perspective: 1000 }}
       >
         {/* Tali lanyard */}
         <motion.div
