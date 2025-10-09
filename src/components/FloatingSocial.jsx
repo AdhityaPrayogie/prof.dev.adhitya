@@ -83,10 +83,10 @@ const FloatingSocial = () => {
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.9 }}
-        className="w-16 h-16 rounded-full bg-black text-white shadow-xl flex items-center justify-center relative"
+        className="w-12 h-12 rounded-full bg-black text-white shadow-xl flex items-center justify-center relative"
       >
         <Plus size={28} />
-        <span className="absolute w-20 h-20 rounded-full bg-purple-400/30 animate-pulse -z-10"></span>
+        <span className="absolute w-14 h-14 rounded-full bg-purple-400/30 animate-pulse -z-10"></span>
       </motion.button>
     </div>
   );
