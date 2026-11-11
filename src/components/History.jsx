@@ -1,139 +1,159 @@
-import React from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./ui/card";
-import Badge from "./ui/badge";
-import { Milestone, Calendar, GraduationCap, School } from "lucide-react";
+// src/components/History.jsx
+import React, { useRef, useState } from "react";
+import { motion, useScroll, useSpring, useTransform, useMotionValueEvent } from "framer-motion";
+import { Terminal, Calendar, ChevronDown, School, GraduationCap, Stethoscope, Briefcase } from "lucide-react";
 
-const historyData = [
+// Urut kronologis: atas = paling awal, bawah = sekarang.
+const journey = [
   {
-    year: "2021 - 2025",
-    place: "Universitas Bina Bangsa",
-    role: "Computer Science Student & Active Member",
-    description:
-      "Studi di jurusan Ilmu Komputer. Aktif di Himpunan Mahasiswa Ilmu Komputer (HIMAKOM) UNIBA dalam pengelolaan platform digital, kegiatan akademik, dan seminar teknologi.",
-    logo: "/Uniba.png",
-    type: "University",
-    icon: <GraduationCap className="w-4 h-4 text-blue-400" />,
+    period: "2015 – 2018",
+    tag: "SMP",
+    title: "SMPN 17 Kota Serang",
+    logo: process.env.PUBLIC_URL + "/SMP17-nobg.png",
+    icon: School,
   },
   {
-    year: "2018 - 2021",
-    place: "SMAN 5 Kota Serang",
-    role: "High School Diploma",
-    description:
-      "Menempuh pendidikan menengah atas jurusan Ilmu Pengetahuan Alam dengan fokus pada pengembangan logika analitis dan teknologi informasi.",
-    logo: "/sman 5.png",
-    type: "High School",
-    icon: <School className="w-4 h-4 text-[#93c5fd]" />,
+    period: "2018 – 2021",
+    tag: "SMA",
+    title: "SMAN 5 Kota Serang",
+    logo: process.env.PUBLIC_URL + "/sman 5.png",
+    desc: "Jurusan IPA.",
+    icon: School,
+  },
+  {
+    period: "2021 – 2025",
+    tag: "Kuliah",
+    title: "Universitas Bina Bangsa (S.Kom)",
+    logo: process.env.PUBLIC_URL + "/Uniba.png",
+    desc: "Lulus Sarjana Ilmu Komputer. Aktif di HIMAKOM UNIBA, mengelola website himpunan dan workshop teknologi.",
+    icon: GraduationCap,
+  },
+  {
+    period: "November 2025 – Juni 2026",
+    tag: "Magang",
+    title: "RS Mata Achmad Wardi BWI-DD",
+    logo: process.env.PUBLIC_URL + "/rsaw.webp",
+    desc: "Magang di bidang IT rumah sakit.",
+    icon: Stethoscope,
+  },
+  {
+    period: "Juli 2026 – Sekarang",
+    tag: "Karyawan",
+    title: "RS Mata Achmad Wardi BWI-DD",
+    logo: process.env.PUBLIC_URL + "/rsaw.webp",
+    desc: "Lanjut sebagai karyawan tetap setelah masa magang.",
+    icon: Briefcase,
+    current: true,
   },
 ];
 
+// Ikon abu-abu sampai ujung garis progress melewati tengahnya.
+const Dot = ({ item, progress, container }) => {
+  const ref = useRef(null);
+  const [lit, setLit] = useState(false);
+  useMotionValueEvent(progress, "change", (v) => {
+    const el = ref.current;
+    if (!el || !container.current) return;
+    const center = el.offsetParent.offsetTop + el.offsetTop + el.offsetHeight / 2;
+    setLit(v * container.current.offsetHeight >= center);
+  });
+  const Icon = item.icon;
+  const on = item.current
+    ? "border-emerald-400 shadow-[0_0_18px_rgba(52,211,153,0.6)] text-emerald-400"
+    : "border-[#38bdf8] shadow-[0_0_15px_rgba(56,189,248,0.5)] text-[#38bdf8]";
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ scale: 0 }}
+      whileInView={{ scale: lit ? 1.1 : 1 }}
+      viewport={{ once: true, amount: 0.6 }}
+      transition={{ type: "spring", stiffness: 300, damping: 18 }}
+      className={`absolute left-5 md:left-1/2 top-4 -ml-5 z-10 w-10 h-10 rounded-full bg-[#02050c] border-2 flex items-center justify-center transition-[border-color,color,box-shadow] duration-500 ${lit ? on : "border-zinc-700 text-zinc-600"}`}
+    >
+      <Icon className="w-4 h-4" />
+    </motion.div>
+  );
+};
+
 const History = () => {
-  const { scrollYProgress } = useScroll();
-  const y = useSpring(scrollYProgress, { stiffness: 400, damping: 40 });
-  const progressHeight = useTransform(y, [0, 1], ["0%", "100%"]);
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 75%", "end 60%"] });
+  const lineScale = useSpring(scrollYProgress, { stiffness: 60, damping: 20, mass: 0.6, restDelta: 0.001 });
+  const tipTop = useTransform(lineScale, (v) => `${v * 100}%`);
 
   return (
-    <section
-      id="history"
-      className="min-h-screen bg-[#060911] text-white px-6 py-28 relative overflow-hidden"
-    >
-      {/* Ambient background glow with #034694 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-[700px] h-[500px] bg-[#034694]/15 blur-[160px] pointer-events-none rounded-full" />
+    <section id="history" className="py-24 px-6 lg:px-12 xl:px-20 text-zinc-200 font-mono">
+      <div className="w-full max-w-screen-2xl mx-auto space-y-14">
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+          <div className="flex items-center gap-2 text-xs text-[#38bdf8] mb-1">
+            <Terminal className="w-4 h-4" />
+            <span>JOURNEY</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-white">Perjalanan Saya</h2>
+        </motion.div>
 
-      {/* Section Header */}
-      <div className="text-center mb-20">
-        <Badge className="mb-3 px-3.5 py-1 text-xs border-[#034694]/50 bg-[#034694]/15 text-[#93c5fd]">
-          <Milestone className="w-3.5 h-3.5 mr-1 text-[#3b82f6]" />
-          Journey
-        </Badge>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-          Education & <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-[#1d70e2]">Milestones</span>
-        </h2>
-        <p className="text-zinc-400 mt-3 max-w-xl mx-auto text-sm sm:text-base">
-          Academic foundation and organizational experiences that shaped my career.
-        </p>
-      </div>
+        <div ref={ref} className="relative max-w-5xl mx-auto">
+          {/* Garis dasar + garis progress yang turun mengikuti scroll */}
+          <div className="absolute left-5 md:left-1/2 top-0 bottom-0 w-0.5 -ml-px bg-[#034694]/40" />
+          <motion.div
+            style={{ scaleY: lineScale }}
+            className="absolute left-5 md:left-1/2 top-0 bottom-0 w-0.5 -ml-px origin-top bg-[#38bdf8] shadow-[0_0_12px_#38bdf8]"
+          />
+          {/* Ujung panah yang ikut turun */}
+          <motion.div style={{ top: tipTop }} className="absolute left-5 md:left-1/2 -ml-3 -mt-3 z-[5] w-6 h-6 pointer-events-none">
+            <motion.div
+              animate={{ y: [0, 4, 0], rotate: [-8, 8, -8] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-full h-full rounded-full bg-[#02050c] border border-[#38bdf8] flex items-center justify-center shadow-[0_0_16px_#38bdf8]"
+            >
+              <ChevronDown className="w-4 h-4 text-[#38bdf8]" />
+            </motion.div>
+          </motion.div>
 
-      <div className="relative max-w-4xl mx-auto">
-        {/* Timeline Center Line (Desktop) */}
-        <div className="hidden md:block absolute left-1/2 top-4 bottom-4 -translate-x-1/2 w-0.5 bg-zinc-800/80 rounded-full" />
+          <div className="space-y-12">
+            {journey.map((item, i) => {
+              const right = i % 2 === 1;
+              return (
+                <div key={item.tag} className="relative md:grid md:grid-cols-2 md:gap-16">
+                  {/* Titik / ikon di garis */}
+                  <Dot item={item} progress={lineScale} container={ref} />
 
-        {/* Animated Progress Line with #034694 */}
-        <motion.div
-          style={{ height: progressHeight }}
-          className="hidden md:block absolute left-1/2 top-4 -translate-x-1/2 w-0.5 bg-gradient-to-b from-[#034694] via-[#1d70e2] to-blue-400 rounded-full z-10"
-        />
-
-        <div className="space-y-14 sm:space-y-20">
-          {historyData.map((item, index) => {
-            const isEven = index % 2 === 0;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}
-                className={`relative flex flex-col md:flex-row items-center ${
-                  isEven ? "md:flex-row" : "md:flex-row-reverse"
-                }`}
-              >
-                {/* Timeline Card */}
-                <div className={`w-full md:w-[45%] ${isEven ? "md:pr-6" : "md:pl-6"}`}>
-                  <Card className="border border-zinc-800/80 bg-[#0a0e18]/80 backdrop-blur-xl hover:border-[#034694]/70 transition-all duration-300 hover:shadow-xl hover:shadow-[#034694]/20 group">
-                    <CardHeader className="p-6 pb-2">
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <Badge variant="outline" className="text-xs gap-1.5 py-1 px-3 border-[#034694]/30 bg-[#0e1424] text-[#93c5fd]">
-                          {item.icon}
-                          <span>{item.type}</span>
-                        </Badge>
-                        <div className="flex items-center gap-1.5 text-xs text-blue-300 font-mono font-medium">
-                          <Calendar className="w-3.5 h-3.5 text-[#3b82f6]" />
-                          <span>{item.year}</span>
-                        </div>
-                      </div>
-                      <CardTitle className="text-xl font-bold text-white group-hover:text-[#93c5fd] transition-colors">
-                        {item.place}
-                      </CardTitle>
-                      <CardDescription className="text-xs font-semibold text-zinc-400 mt-1">
-                        {item.role}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-6 pt-2">
-                      <p className="text-sm text-zinc-300 leading-relaxed">
-                        {item.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Center Node Logo Indicator with #034694 border */}
-                <div className="relative my-4 md:my-0 flex items-center justify-center z-20">
+                  {/* Kartu: turun dari atas saat masuk layar */}
                   <motion.div
-                    whileHover={{ scale: 1.15, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                    className="w-14 h-14 rounded-2xl bg-[#0e1424] border-2 border-[#034694] flex items-center justify-center shadow-lg shadow-[#034694]/30 overflow-hidden p-2 group"
+                    initial={{ opacity: 0, y: -40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                    whileHover={{ y: -4 }}
+                    className={`ml-14 md:ml-0 ${right ? "md:col-start-2" : "md:col-start-1 md:text-right"}`}
                   >
-                    <img
-                      src={process.env.PUBLIC_URL + item.logo}
-                      alt={item.place}
-                      className="w-full h-full object-contain filter drop-shadow group-hover:brightness-110 transition-all"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
+                    <div className="border border-[#034694]/80 hover:border-[#38bdf8] bg-[#040916]/90 backdrop-blur-xl rounded-xl p-5 space-y-2 shadow-[0_0_25px_rgba(3,70,148,0.25)] transition-colors">
+                      <div className={`flex flex-wrap items-center gap-2 text-xs ${right ? "" : "md:justify-end"}`}>
+                        <span className={`px-2 py-0.5 rounded font-bold border ${item.current ? "text-emerald-400 border-emerald-400/50 bg-emerald-400/10" : "text-[#38bdf8] border-[#034694] bg-[#034694]/20"}`}>
+                          {item.tag}
+                        </span>
+                        <span className="flex items-center gap-1 text-zinc-400">
+                          <Calendar className="w-3 h-3 text-[#38bdf8]" />
+                          {item.period}
+                        </span>
+                      </div>
+                      <div className={`flex items-center gap-3 pt-1 ${right ? "" : "md:flex-row-reverse"}`}>
+                        <div className="shrink-0 h-12 min-w-[3rem] max-w-[11rem] px-2 rounded-lg bg-white flex items-center justify-center">
+                          <img src={item.logo} alt={`Logo ${item.title}`} loading="lazy" className="max-h-10 w-auto object-contain" />
+                        </div>
+                        <h3 className="text-lg font-bold text-white">{item.title}</h3>
+                      </div>
+                      {item.desc && <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">{item.desc}</p>}
+                    </div>
                   </motion.div>
                 </div>
-
-                {/* Empty spacer for opposite column */}
-                <div className="hidden md:block w-full md:w-[45%]" />
-              </motion.div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default History;
+export default History;

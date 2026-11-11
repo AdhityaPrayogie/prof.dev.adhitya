@@ -7,10 +7,14 @@ import History from "./components/History";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import Background from "./components/Background";
+import { MotionConfig } from "framer-motion";
 
 function App() {
   return (
-    <div className="bg-dark min-h-screen text-white">
+    <div className="relative isolate bg-[#02050c] min-h-screen text-white">
+      <MotionConfig reducedMotion="user">
+      <Background />
       <Navbar />
       <FloatingSocial />
       <Hero />
@@ -19,6 +23,7 @@ function App() {
       <Projects />
       <Contact />
       <Footer />
+      </MotionConfig>
     </div>
   );
 }
